@@ -23,5 +23,8 @@
   "homepage": "https://github.com/npm-plugins/duiba-sprite#readme",
   "devDependencies": {
     "images": "^3.0.1"
+  },
+  "bin": {
+    "duiba-sprite": "./src/index.js"
   }
 }
