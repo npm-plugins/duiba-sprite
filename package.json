@@ -1,8 +1,11 @@
 {
   "name": "duiba-sprite",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "create sprite by node-images",
   "main": "src/index.js",
+  "bin": {
+    "duiba-sprite": "./src/index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -21,10 +24,7 @@
     "url": "https://github.com/npm-plugins/duiba-sprite/issues"
   },
   "homepage": "https://github.com/npm-plugins/duiba-sprite#readme",
-  "devDependencies": {
+  "dependencies": {
     "images": "^3.0.1"
-  },
-  "bin": {
-    "duiba-sprite": "./src/index.js"
   }
 }
