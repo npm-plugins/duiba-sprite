@@ -1,6 +1,6 @@
 {
   "name": "duiba-sprite",
-  "version": "1.0.1",
+  "version": "1.0.4",
   "description": "create sprite by node-images",
   "main": "src/index.js",
   "bin": {
@@ -25,6 +25,9 @@
   },
   "homepage": "https://github.com/npm-plugins/duiba-sprite#readme",
   "dependencies": {
+    "images": "^3.0.1"
+  },
+  "peerDependencies": {
     "images": "^3.0.1"
   }
 }
