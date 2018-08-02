@@ -1,6 +1,6 @@
 {
   "name": "duiba-sprite",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "create sprite by node-images",
   "main": "src/index.js",
   "bin": {

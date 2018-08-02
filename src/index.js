@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 
-const nodeImages = require("images");
+const nodeImages = require('images');
 const path = require('path');
 const fs = require('fs');
+const config = require('../package.json');
 
+// 获取目录下的图片数组
 function getImgs(input) {
     if (!fs.existsSync(input)) {
         console.warn('路径不存在');
@@ -20,6 +22,7 @@ function getImgs(input) {
     return imgs;
 }
 
+// 生成雪碧图
 function createSprite(input, output, mode) {
     const imgs = getImgs(input);
     if (imgs.length === 0) {
@@ -31,6 +34,7 @@ function createSprite(input, output, mode) {
     const data = [];
     let cw = 0, ch = 0;
     const l = getLine(imgs.length);
+    
     switch (mode) {
         case '0':
             cw = width;
@@ -87,16 +91,19 @@ function createSprite(input, output, mode) {
             }
             break;
     }
+    
     const canvas = nodeImages(cw, ch);
     for (let index = 0; index < data.length; index++) {
         const item = data[index];
         canvas.draw(item.img, item.x, item.y);
     }
-    canvas.save(output + '/sprite.png');
-    console.log('雪碧图已生成');
-    createCss(output, data, mode);
+    canvas.saveAsync(output + '/sprite.png', function() {
+        console.log('雪碧图已生成');
+        createCss(output, data, mode);
+    });
 }
 
+// 雪碧图几行显示
 function getLine(nums) {
     const i = 9;
     let l = 1;
@@ -109,38 +116,27 @@ function getLine(nums) {
     return l;
 }
 
+// 生成css文件
 function createCss(out, data, mode) {
     let tpl = '.sprite {';
-    switch (mode) {
-        case '0':
-            for (let index = 0; index < data.length; index++) {
-                const item = data[index];
-                tpl += '\r\r\n   .frame-'+index+' {\r\n        background-position: ' + item.x + 'px -' + item.y + 'px;\r\n    }'
-            }
-            tpl += '\r\n}';
-            break;
-        case '1':
-            for (let index = 0; index < data.length; index++) {
-                const item = data[index];
-                tpl += '\r\r\n   .frame-'+index+' {\r\n        background-position: -' + item.x + 'px ' + item.y + 'px;\r\n    }'
-            }
-            tpl += '\r\n}';
-            break;
-        case '2':
-            for (let index = 0; index < data.length; index++) {
-                const item = data[index];
-                tpl += '\r\r\n   .frame-'+index+' {\r\n        background-position: -' + item.x + 'px -' + item.y + 'px;\r\n    }'
-            }
-            tpl += '\r\n}';
-            break;
-        case '3':
-            for (let index = 0; index < data.length; index++) {
-                const item = data[index];
-                tpl += '\r\r\n   .frame-'+index+' {\r\n        background-position: -' + item.x + 'px -' + item.y + 'px;\r\n    }'
-            }
-            tpl += '\r\n}';
-            break;
+
+    for (let index = 0; index < data.length; index++) {
+        const item = data[index];
+        if (mode === '0') {
+            tpl += '\r\r\n   .frame-'+index+' {\r\n        background-position: ' + item.x + 'px -' + item.y + 'px;\r\n    }';
+        } else if (mode === '1') {
+            tpl += '\r\r\n   .frame-'+index+' {\r\n        background-position: -' + item.x + 'px ' + item.y + 'px;\r\n    }';
+        } else if (mode === '2') {
+            tpl += '\r\r\n   .frame-'+index+' {\r\n        background-position: -' + item.x + 'px -' + item.y + 'px;\r\n    }';
+        } else if (mode === '3') {
+            tpl += '\r\r\n   .frame-'+index+' {\r\n        background-position: -' + item.x + 'px -' + item.y + 'px;\r\n    }';
+        } else {
+
+        };
     }
+
+    tpl += '\r\n}';
+
     fs.writeFile(out + '/sprite.less', tpl, function (err) {
         if (err) {
             return console.error(err);
@@ -151,9 +147,9 @@ function createCss(out, data, mode) {
 
 function start() {
     const args = process.argv.slice(2);
-    let input = 'img', output = 'img', mode = 0;
+    let input = 'img', output = 'img', mode = '0', v = 0;
     if (args.length) {
-        for (let index = 0; index < args.length; index += 2) {
+        for (let index = 0; index < args.length; index ++) {
             const key = args[index];
             if (key === '-i' || key === '-input') {
                 input = output = args[index + 1];
@@ -164,7 +160,14 @@ function start() {
             if (key === '-m' || key === '-mode') {
                 mode = args[index + 1];
             }
+            if (key === '-v' || key === '-version') {
+                v = config.version;
+            }
         }
+    }
+    if (v) {
+       console.log(v);
+       return false; 
     }
     createSprite(input, output, mode);
 }
