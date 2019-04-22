@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+const program = require('commander');
 const nodeImages = require('images');
 const path = require('path');
 const fs = require('fs');
@@ -36,7 +37,7 @@ function createSprite(input, output, mode) {
     const l = getLine(imgs.length);
     
     switch (mode) {
-        case '0':
+        case 0:
             cw = width;
             ch = height * imgs.length;
             for (let index = 0; index < imgs.length; index++) {
@@ -48,7 +49,7 @@ function createSprite(input, output, mode) {
                 })
             }
             break;
-        case '1':
+        case 1:
             cw = width * imgs.length;
             ch = height;
             for (let index = 0; index < imgs.length; index++) {
@@ -60,7 +61,7 @@ function createSprite(input, output, mode) {
                 })
             }
             break;
-        case '2':
+        case 1:
             cw = width * l;
             ch = height * l;
             for (let index = 0; index < imgs.length; index++) {
@@ -75,7 +76,7 @@ function createSprite(input, output, mode) {
                 })
             }
             break;
-        case '3':
+        case 3:
             cw = width * l;
             ch = height * l;
             for (let index = 0; index < imgs.length; index++) {
@@ -122,13 +123,13 @@ function createCss(out, data, mode) {
 
     for (let index = 0; index < data.length; index++) {
         const item = data[index];
-        if (mode === '0') {
+        if (mode === 0) {
             tpl += '\r\r\n   .frame-'+index+' {\r\n        background-position: ' + item.x + 'px -' + item.y + 'px;\r\n    }';
-        } else if (mode === '1') {
+        } else if (mode === 1) {
             tpl += '\r\r\n   .frame-'+index+' {\r\n        background-position: -' + item.x + 'px ' + item.y + 'px;\r\n    }';
-        } else if (mode === '2') {
+        } else if (mode === 2) {
             tpl += '\r\r\n   .frame-'+index+' {\r\n        background-position: -' + item.x + 'px -' + item.y + 'px;\r\n    }';
-        } else if (mode === '3') {
+        } else if (mode === 3) {
             tpl += '\r\r\n   .frame-'+index+' {\r\n        background-position: -' + item.x + 'px -' + item.y + 'px;\r\n    }';
         } else {
 
@@ -145,31 +146,21 @@ function createCss(out, data, mode) {
     });
 }
 
-function start() {
-    const args = process.argv.slice(2);
-    let input = 'img', output = 'img', mode = '0', v = 0;
-    if (args.length) {
-        for (let index = 0; index < args.length; index ++) {
-            const key = args[index];
-            if (key === '-i' || key === '-input') {
-                input = output = args[index + 1];
-            }
-            if (key === '-o' || key === '-output') {
-                output = args[index + 1];
-            }
-            if (key === '-m' || key === '-mode') {
-                mode = args[index + 1];
-            }
-            if (key === '-v' || key === '-version') {
-                v = config.version;
-            }
-        }
-    }
-    if (v) {
-       console.log(v);
-       return false; 
-    }
-    createSprite(input, output, mode);
+// 开始
+function start(input, output, model) {
+    createSprite(input, output, model);
 }
 
-start()
+// 命令行
+program
+    .version(config.version, '-v, --version')
+    .option('-m, --model <n>', 'sprite models', parseInt, 0)
+    .option('-o, --output <string>', 'output directory', null, 'img')
+    .option('-i, --input <string>', 'input directory', null, 'img')
+    .parse(process.argv);
+
+if (!program.output) {
+    program.output = program.input;
+}
+
+start(program.input, program.output, program.model);
