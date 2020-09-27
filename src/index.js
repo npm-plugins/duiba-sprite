@@ -34,7 +34,8 @@ function createSprite(input, output, mode) {
     const height = img.height();
     const data = [];
     let cw = 0, ch = 0;
-    const l = getLine(imgs.length);
+    const l = getCol(imgs.length);
+    const row = getRow(imgs.length, l);
     
     switch (mode) {
         case 0:
@@ -63,7 +64,7 @@ function createSprite(input, output, mode) {
             break;
         case 2:
             cw = width * l;
-            ch = height * l;
+            ch = height * row;
             for (let index = 0; index < imgs.length; index++) {
                 const img = imgs[index];
                 const i = index % l;
@@ -77,7 +78,7 @@ function createSprite(input, output, mode) {
             }
             break;
         case 3:
-            cw = width * l;
+            cw = width * row;
             ch = height * l;
             for (let index = 0; index < imgs.length; index++) {
                 const img = imgs[index];
@@ -105,7 +106,7 @@ function createSprite(input, output, mode) {
 }
 
 // 雪碧图几行显示
-function getLine(nums) {
+function getCol(nums) {
     const i = 9;
     let l = 1;
     for (let index = 1; index < i; index++) {
@@ -115,6 +116,13 @@ function getLine(nums) {
         }
     }
     return l;
+}
+
+function getRow(nums, col) {
+    const n = nums % col
+    const row = Math.floor(nums / col)
+    if (n > 0) return row + 1
+    return row
 }
 
 // 生成css文件
