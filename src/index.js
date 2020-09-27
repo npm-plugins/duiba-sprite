@@ -61,7 +61,7 @@ function createSprite(input, output, mode) {
                 })
             }
             break;
-        case 1:
+        case 2:
             cw = width * l;
             ch = height * l;
             for (let index = 0; index < imgs.length; index++) {
@@ -119,18 +119,20 @@ function getLine(nums) {
 
 // 生成css文件
 function createCss(out, data, mode) {
-    let tpl = '.sprite {';
+    let tpl = '@keyframes duiba-sprite {';
+
+    const guld = (100 / (data.length-1)).toFixed(2)
 
     for (let index = 0; index < data.length; index++) {
         const item = data[index];
         if (mode === 0) {
-            tpl += '\r\r\n   .frame-'+index+' {\r\n        background-position: ' + item.x + 'px -' + item.y + 'px;\r\n    }';
+            tpl += '\r\r\n   '+(index * guld)+'% {\r\n        background-position: ' + item.x + 'px -' + item.y + 'px;\r\n    }';
         } else if (mode === 1) {
-            tpl += '\r\r\n   .frame-'+index+' {\r\n        background-position: -' + item.x + 'px ' + item.y + 'px;\r\n    }';
+            tpl += '\r\r\n   '+(index * guld)+'% {\r\n        background-position: -' + item.x + 'px ' + item.y + 'px;\r\n    }';
         } else if (mode === 2) {
-            tpl += '\r\r\n   .frame-'+index+' {\r\n        background-position: -' + item.x + 'px -' + item.y + 'px;\r\n    }';
+            tpl += '\r\r\n   '+(index * guld)+'% {\r\n        background-position: -' + item.x + 'px -' + item.y + 'px;\r\n    }';
         } else if (mode === 3) {
-            tpl += '\r\r\n   .frame-'+index+' {\r\n        background-position: -' + item.x + 'px -' + item.y + 'px;\r\n    }';
+            tpl += '\r\r\n   '+(index * guld)+'% {\r\n        background-position: -' + item.x + 'px -' + item.y + 'px;\r\n    }';
         } else {
 
         };
